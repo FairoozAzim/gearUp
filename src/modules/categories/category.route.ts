@@ -5,7 +5,7 @@ import { categoryController } from "./category.controller";
 const router = Router();
 
 
-router.get("/categories", categoryController.getAllCategories);
+router.get("/", categoryController.getAllCategories);
 
 
 export const categoryRoutes = router;

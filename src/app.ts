@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import {authRoutes } from "./modules/authentication/auth.route";
 import { gearRoutes } from "./modules/gears/gear.route";
 import { providerRoutes } from "./modules/providerManagement/provider.route";
+import { categoryRoutes } from "./modules/categories/category.route";
 
 const app: Application = express();
 
@@ -34,6 +35,7 @@ app.get("/", (req : Request, res : Response) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/gear", gearRoutes);
-app.use("/api/provider", providerRoutes)
+app.use("/api/provider", providerRoutes);
+app.use("/api/categories", categoryRoutes);
 
 export default app;
