@@ -1,0 +1,31 @@
+enum ActiveStatus {
+    ACTIVE
+    SUSPENDED
+}
+
+enum Role {
+    ADMIN
+    CUSTOMER
+    PROVIDER
+}
+
+enum OrderStatus {
+    PLACED
+    CONFIRMED
+    PICKED_UP
+    RETURNED
+    CANCELLED
+}
+
+enum PaymentProvider {
+
+    Stripe
+    SSLCommerz
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+
+}

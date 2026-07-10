@@ -1,0 +1,21 @@
+model RentOrders {
+    order_id String @id @default(uuid())
+    quantity Int
+    total_amount Decimal
+    pickup_date DateTime
+    end_date DateTime
+    return_date DateTime
+    order_status OrderStatus @default(PLACED)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    review Reviews?
+    payment Payment[]
+
+
+    @@map("orders")
+
+
+
+}
+

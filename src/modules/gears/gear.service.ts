@@ -1,0 +1,89 @@
+import { prisma } from "../../lib/prisma";
+import { GearFilters } from "./gear.interface";
+
+
+const getAllGearFromDB = async (filters: GearFilters) => {
+    const { category_id, brand, minPrice, maxPrice, searchTerm } = filters;
+
+    const gearList = await prisma.gearItems.findMany({
+        where: {
+            is_active: true,
+            ...(category_id && { category_id }),
+            ...(brand && { brand: { equals: brand, mode: "insensitive" } }),
+            ...(searchTerm && {
+                item_name: { contains: searchTerm, mode: "insensitive" }
+            }),
+            ...((minPrice || maxPrice) && {
+                price: {
+                    ...(minPrice && { gte: Number(minPrice) }),
+                    ...(maxPrice && { lte: Number(maxPrice) })
+                }
+            })
+        },
+        include: {
+            category: true
+        }
+    });
+
+    return gearList;
+};
+
+const getGearByIdFromDB = async (itemId: string) => {
+    const gear = await prisma.gearItems.findUniqueOrThrow({
+        where: { item_id: itemId },
+        include: {
+            category: true,
+            user: {
+                select: {
+                    user_id: true,
+                    name: true
+                }
+            }
+        }
+    });
+
+    return gear;
+};
+
+
+//     providerId: string,
+//     itemId: string,
+//     payload: UpdateGearPayload
+// ) => {
+//     const gear = await prisma.gearItems.findUniqueOrThrow({
+//         where: { item_id: itemId }
+//     });
+
+//     if (gear.provider_id !== providerId) {
+//         throw new Error("You are not authorized to update this gear item");
+//     }
+
+//     const updatedGear = await prisma.gearItems.update({
+//         where: { item_id: itemId },
+//         data: payload
+//     });
+
+//     return updatedGear;
+// };
+
+// const deleteGearFromDB = async (providerId: string, itemId: string) => {
+//     const gear = await prisma.gearItems.findUniqueOrThrow({
+//         where: { item_id: itemId }
+//     });
+
+//     if (gear.provider_id !== providerId) {
+//         throw new Error("You are not authorized to delete this gear item");
+//     }
+
+//     const deletedGear = await prisma.gearItems.update({
+//         where: { item_id: itemId },
+//         data: { is_active: false }
+//     });
+
+//     return deletedGear;
+// };
+
+export const gearService = {
+    getAllGearFromDB,
+    getGearByIdFromDB,
+};

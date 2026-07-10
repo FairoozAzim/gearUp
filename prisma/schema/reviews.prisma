@@ -1,0 +1,15 @@
+model Reviews {
+    review_id String @id @default(uuid())
+    rating Int
+    review String
+    reviewed_at DateTime
+
+    order_id String @unique
+    order RentOrders @relation(fields: [order_id],references: [order_id ])
+
+    item_id String
+    item GearItems @relation(fields: [item_id],references: [item_id])
+
+
+    @@map("reviews")
+}

@@ -1,0 +1,25 @@
+model GearItems {
+    item_id String @id @default(uuid())
+    item_name String
+    description String
+    brand String
+    price Decimal @db.Decimal(10, 2)
+    quantity Int
+    available_quantity Int
+    is_active Boolean
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    provider_id String 
+    user User @relation(fields: [provider_id], references: [user_id])
+
+    category_id String 
+    category Categories @relation(fields: [category_id], references: [cat_id])
+
+    review Reviews[]
+
+    @@map("gearItems")
+
+
+
+}

@@ -1,0 +1,8 @@
+model Categories {
+    cat_id String @id @default(uuid())
+    category_name String @unique
+
+    gear GearItems[] // one category -> many gear items
+
+    @@map("categories")
+}
