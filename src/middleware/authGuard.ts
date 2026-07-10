@@ -20,7 +20,7 @@ declare global {
     }
 }
 
-export const auth = (...requiredRoles : Role[]) => {
+export const authGuard = (...requiredRoles : Role[]) => {
     return catchAsync(async(req : Request, res: Response, next : NextFunction) => {
         const token = req.cookies.accessToken ? req.cookies.accessToken :  req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization?.split(" ")[1] : req.headers.authorization ;
 

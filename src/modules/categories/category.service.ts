@@ -29,10 +29,35 @@ const getAllCategoriesFromDB = async () => {
     return categories;
 };
 
+const updateCategoryIntoDB = async (catId: string, rawName: string) => {
+    const category_name = normalizeCategoryName(rawName);
+
+    const updated = await prisma.categories.update({
+        where: { cat_id: catId },
+        data: { category_name }
+    });
+
+    return updated;
+};
+
+const deleteCategoryFromDB = async (catId: string) => {
+    const gearUsingCategory = await prisma.gearItems.findFirst({
+        where: { category_id: catId }
+    });
+
+    if (gearUsingCategory) {
+        throw new Error("Cannot delete a category that is still assigned to gear items");
+    }
+
+    return prisma.categories.delete({ where: { cat_id: catId } });
+};
+
 
 export const categoryService = {
     getAllCategoriesFromDB,
     normalizeCategoryName,
-    findOrCreateCategory
+    findOrCreateCategory,
+    updateCategoryIntoDB,
+    deleteCategoryFromDB
 
 }

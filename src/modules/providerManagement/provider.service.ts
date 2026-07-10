@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { CreateGearPayload, UpdateGearPayload } from "./provider.interface";
+import { CreateGearPayload, IUpdateOrderStatusPayload, UpdateGearPayload } from "./provider.interface";
 import { categoryService }  from "../categories/category.service";
 
 
@@ -35,7 +35,7 @@ const updateGearIntoDB = async (
     providerId: string,
     itemId: string,
     payload: UpdateGearPayload) => {
-        
+
     const gear = await prisma.gearItems.findUniqueOrThrow({
         where: { item_id: itemId }
     });
@@ -63,6 +63,55 @@ const updateGearIntoDB = async (
     return updatedGear;
 };
 
+const getProviderOrdersFromDB = async (providerId: string) => {
+    const orders = await prisma.rentOrders.findMany({
+        where: { item: { provider_id: providerId } },
+        include: {
+            item: true,
+            user: { select: { user_id: true, name: true, email: true } }
+        },
+        orderBy: { createdAt: "desc" }
+    });
+
+    return orders;
+};
+
+const updateOrderStatusIntoDB = async (
+    providerId: string,
+    orderId: string,
+    newStatus: IUpdateOrderStatusPayload["order_status"]
+) => {
+    const order = await prisma.rentOrders.findUniqueOrThrow({
+        where: { order_id: orderId },
+        include: { item: true }
+    });
+
+    if (order.item.provider_id !== providerId) {
+        throw new Error("You are not authorized to update this order");
+    }
+
+    const updateData: any = { order_status: newStatus };
+
+    if (newStatus === "RETURNED") {
+        updateData.return_date = new Date();
+    }
+
+    // Restore stock if the provider cancels/rejects the order
+    if (newStatus === "CANCELLED") {
+        await prisma.gearItems.update({
+            where: { item_id: order.item_id },
+            data: { available_quantity: { increment: order.quantity } }
+        });
+    }
+
+    const updatedOrder = await prisma.rentOrders.update({
+        where: { order_id: orderId },
+        data: updateData
+    });
+
+    return updatedOrder;
+};
+
 const deleteGearFromDB = async (providerId: string, itemId: string) => {
     const gear = await prisma.gearItems.findUniqueOrThrow({
         where: { item_id: itemId }
@@ -84,6 +133,9 @@ const deleteGearFromDB = async (providerId: string, itemId: string) => {
 export const providerService = {
     createGearIntoDB,
     getMyGearFromDB,
+    getProviderOrdersFromDB,
     updateGearIntoDB,
+    updateOrderStatusIntoDB,
     deleteGearFromDB
+    
 };

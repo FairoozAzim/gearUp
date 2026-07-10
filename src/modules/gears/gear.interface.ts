@@ -4,4 +4,5 @@ export interface GearFilters {
     minPrice?: string;
     maxPrice?: string;
     searchTerm?: string;
+    availability?: string;
 }

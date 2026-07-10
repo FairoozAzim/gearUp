@@ -3,7 +3,7 @@ import { GearFilters } from "./gear.interface";
 
 
 const getAllGearFromDB = async (filters: GearFilters) => {
-    const { category_id, brand, minPrice, maxPrice, searchTerm } = filters;
+    const { category_id, brand, minPrice, maxPrice, searchTerm, availability } = filters;
 
     const gearList = await prisma.gearItems.findMany({
         where: {
@@ -18,10 +18,14 @@ const getAllGearFromDB = async (filters: GearFilters) => {
                     ...(minPrice && { gte: Number(minPrice) }),
                     ...(maxPrice && { lte: Number(maxPrice) })
                 }
-            })
+            }),
+            ...(availability === "true" && { available_quantity: { gt: 0 } })
         },
         include: {
             category: true
+        },
+        orderBy: {
+            createdAt : "desc"
         }
     });
 

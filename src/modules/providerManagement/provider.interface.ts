@@ -16,3 +16,7 @@ export interface UpdateGearPayload {
     is_active?: boolean;
     category_name?: string;
 }
+
+export interface IUpdateOrderStatusPayload {
+    order_status: "CONFIRMED" | "CANCELLED" | "PICKED_UP" | "RETURNED";
+}

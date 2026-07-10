@@ -16,6 +16,7 @@ model GearItems {
     category_id String 
     category Categories @relation(fields: [category_id], references: [cat_id])
 
+    order RentOrders[]
     review Reviews[]
 
     @@map("gearItems")

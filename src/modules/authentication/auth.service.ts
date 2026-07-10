@@ -9,7 +9,7 @@ import { jwtUtils } from "../../utils/jwt";
 
 const registerUserIntoDB = async (payload : RegisterUserPayload) => {
     const {name,email, password, role} = payload
-     const isUserExist = await prisma.user.findUnique({
+    const isUserExist = await prisma.user.findUnique({
         where: {email}
     })
 

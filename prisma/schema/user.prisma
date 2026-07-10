@@ -7,7 +7,10 @@ model User{
     role Role @default(CUSTOMER)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
     gear GearItems[] // one provider -> many gear items
+    orders RentOrders[]
+
 
     @@map("users")
 
