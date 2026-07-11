@@ -4,8 +4,10 @@ import config from "../../config";
 import { ILoginUser, RegisterUserPayload } from "./auth.interface";
 import  { JwtPayload, SignOptions } from "jsonwebtoken";
 import { jwtUtils } from "../../utils/jwt";
+import { Role } from "../../../generated/prisma/enums";
 
 
+const ALLOWED_REGISTRATION_ROLES: Role[] = [Role.CUSTOMER, Role.PROVIDER];
 
 const registerUserIntoDB = async (payload : RegisterUserPayload) => {
     const {name,email, password, role} = payload
@@ -16,6 +18,9 @@ const registerUserIntoDB = async (payload : RegisterUserPayload) => {
     if (isUserExist){
         throw new Error ("A user with this email already exists");
     }
+    if (role && !ALLOWED_REGISTRATION_ROLES.includes(role)) {
+        throw new Error("Invalid role for registration");
+    }
     const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
  
     await prisma.user.create({
@@ -23,7 +28,7 @@ const registerUserIntoDB = async (payload : RegisterUserPayload) => {
            name,
            email,
            password : hashedPassword,
-           role 
+           role
     }
     });
 

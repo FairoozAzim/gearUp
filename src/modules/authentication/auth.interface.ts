@@ -4,7 +4,7 @@ export interface RegisterUserPayload {
      name: string,
      email: string,
      password : string,
-     role? : Role
+     role? : Extract<Role, "CUSTOMER" | "PROVIDER">
 }
 
 export interface ILoginUser {
