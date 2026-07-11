@@ -39,7 +39,7 @@ const getAllGearFromDB = async (filters: GearFilters) => {
 
 const getGearByIdFromDB = async (itemId: string) => {
     const gear = await prisma.gearItems.findUniqueOrThrow({
-        where: { item_id: itemId },
+        where: { item_id: itemId, is_active: true },
         include: {
             category: true,
             provider: {

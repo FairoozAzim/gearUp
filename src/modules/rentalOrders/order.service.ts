@@ -64,10 +64,21 @@ const getMyOrdersFromDB = async (userId: string) => {
         where: { customer_id: userId },
         include: {
             item: {
-                select: { item_name: true, brand: true, price: true }
+                select: {
+                item_name: true,
+                brand: true,
+                price: true,
+                category: true,
+                provider_id: true,
+                provider: {
+                    select: { user_id: true, name: true }
+                    
+                }
             }
         },
+
         orderBy: { createdAt: "desc" }
+    }
     });
 
     return orders;
@@ -77,7 +88,14 @@ const getOrderDetailsFromDB = async (orderId: string, userId: string) => {
     const order = await prisma.rentOrders.findUniqueOrThrow({
         where: { order_id: orderId },
         include: {
-            item: true,
+            item: {
+                 include: {
+                    category: true,
+                    provider: {
+                        select: { user_id: true, name: true }
+                    }
+                }
+            },
             customer: {
                 select: { user_id: true, name: true, email: true }
             }
