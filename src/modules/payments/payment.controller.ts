@@ -19,7 +19,7 @@ const createPayment = catchAsync(async (req: Request, res: Response, next: NextF
 
 const stripeWebhook = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const signature = req.headers["stripe-signature"] as string;
-    const result = await paymentService.handleStripeWebhook(req.body, signature);
+    await paymentService.handleStripeWebhook(req.body, signature);
 
     sendResponse(res, {
         success : true,

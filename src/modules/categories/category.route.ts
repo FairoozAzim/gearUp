@@ -9,6 +9,4 @@ router.get("/", categoryController.getAllCategories);
 router.patch("/:id", authGuard(Role.ADMIN), categoryController.updateCategory);
 router.delete("/:id", authGuard(Role.ADMIN), categoryController.deleteCategory);
 
-
-
 export const categoryRoutes = router;
