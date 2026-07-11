@@ -9,6 +9,171 @@ This document outlines the manual testing procedure for all GearUp API endpoints
 - Stripe CLI running for webhook forwarding: `stripe listen --forward-to localhost:5000/api/payments/webhook`
 - Fresh or seeded database
 
+---
+
+## Seed Data
+
+Use these request bodies, in order, to populate a fresh database before running the test matrix below.
+
+### Users
+
+**Register — Provider 1**
+```json
+{
+  "name": "Rasel Ahmed",
+  "email": "rasel.provider@example.com",
+  "password": "Password123!",
+  "role": "PROVIDER"
+}
+```
+
+**Register — Provider 2**
+```json
+{
+  "name": "Nusrat Jahan",
+  "email": "nusrat.provider@example.com",
+  "password": "Password123!",
+  "role": "PROVIDER"
+}
+```
+
+**Register — Customer 1**
+```json
+{
+  "name": "Fahim Chowdhury",
+  "email": "fahim.customer@example.com",
+  "password": "Password123!",
+  "role": "CUSTOMER"
+}
+```
+
+**Register — Customer 2**
+```json
+{
+  "name": "Tania Islam",
+  "email": "tania.customer@example.com",
+  "password": "Password123!",
+  "role": "CUSTOMER"
+}
+```
+
+**Admin** — Admin can't register through the public endpoint, with this credential, admin can be logged in. 
+```json
+{
+
+  "email": "admin@example.com",
+  "password": "ADmin123!",
+
+}
+```
+
+### Gear items (create as Provider 1 / Provider 2, via `POST /api/provider/gear`)
+
+**Provider 1 — Trek Mountain Bike** (save response `item_id` as `gearId1`)
+```json
+{
+  "item_name": "Trek Mountain Bike",
+  "description": "21-speed mountain bike, great for trails and city rides.",
+  "brand": "Trek",
+  "price": 15.00,
+  "quantity": 3,
+  "category_name": "Cycling"
+}
+```
+
+**Provider 1 — 4-Person Camping Tent**
+```json
+{
+  "item_name": "4-Person Camping Tent",
+  "description": "Waterproof tent, easy setup, includes ground sheet.",
+  "brand": "Coleman",
+  "price": 25.00,
+  "quantity": 2,
+  "category_name": "Camping"
+}
+```
+
+**Provider 2 — Inflatable Kayak** (save response `item_id` as `gearId2`)
+```json
+{
+  "item_name": "Inflatable Kayak",
+  "description": "Single-person kayak with paddle and pump included.",
+  "brand": "Intex",
+  "price": 30.00,
+  "quantity": 2,
+  "category_name": "Water Sports"
+}
+```
+
+**Provider 2 — Adjustable Dumbbell Set**
+```json
+{
+  "item_name": "Adjustable Dumbbell Set",
+  "description": "5-25kg adjustable dumbbells, pair.",
+  "brand": "Bowflex",
+  "price": 10.00,
+  "quantity": 5,
+  "category_name": "Fitness"
+}
+```
+
+**Provider 1 — Hiking Backpack 50L**
+```json
+{
+  "item_name": "Hiking Backpack 50L",
+  "description": "Durable trekking backpack with rain cover.",
+  "brand": "Osprey",
+  "price": 12.00,
+  "quantity": 4,
+  "category_name": "Hiking"
+}
+```
+
+### Rental order (create as Customer 1, via `POST /api/rentals`)
+
+**Order on `gearId2`** (save response `order_id` as `orderId1`)
+```json
+{
+  "item_id": "REPLACE_WITH_gearId2",
+  "quantity": 1,
+  "pickup_date": "2026-07-20",
+  "end_date": "2026-07-23"
+}
+```
+
+### Payment (create as Customer 1, via `POST /api/payments/create`)
+
+```json
+{
+  "order_id": "REPLACE_WITH_orderId1",
+  "method": "card",
+  "provider": "Stripe"
+}
+```
+Complete checkout in the browser using Stripe's test card:
+```
+Card number: 4242 4242 4242 4242
+Expiry: 12/34
+CVC: 123
+ZIP: 12345
+```
+
+### Review (create as Customer 1, after order status is `RETURNED`, via `POST /api/reviews`)
+
+```json
+{
+  "order_id": "REPLACE_WITH_orderId1",
+  "rating": 5,
+  "review": "Bike was in great condition, smooth gears and easy pickup."
+}
+```
+
+**Notes on seeding:**
+- Categories ("Cycling," "Camping," "Water Sports," "Fitness," "Hiking") are created automatically via find-or-create when the gear items above are submitted — no separate category-creation step needed.
+- Replace every `REPLACE_WITH_...` placeholder with the real ID returned from the corresponding prior response.
+- For a faster, repeatable reset between test runs, consider wrapping the above into a Postman Collection with test scripts that auto-save `gearId1`, `gearId2`, `orderId1`, etc. as environment variables after each response, rather than copying manually each time.
+
+---
 
 ## 1. Authentication (`/api/auth`)
 
@@ -39,7 +204,7 @@ This document outlines the manual testing procedure for all GearUp API endpoints
 | 2.4 | Normalization — whitespace | Create gear with `category_name: "  Cycling  "` | Reuses existing "Cycling", no duplicate |
 | 2.5 | Update category (admin) | `PATCH /:id` | 200, name updated |
 | 2.6 | Update category (non-admin) | `PATCH /:id` as customer | 403 |
-| 2.7 | Delete category in use | `DELETE /:id` on a category linked to gear | 400, blocked with clear message |
+| 2.7 | Delete category in use | `DELETE /:id` on a category linked to gear | 4xx, blocked with clear message |
 | 2.8 | Delete unused category | `DELETE /:id` on an orphaned category | 200, deleted |
 
 ---
@@ -52,7 +217,7 @@ This document outlines the manual testing procedure for all GearUp API endpoints
 | 3.2 | Create gear (provider 2) | `POST /gear` | 201, save as `gearId2` |
 | 3.3 | Create gear as customer | `POST /gear` | 403 |
 | 3.4 | Price precision | `POST /gear` with `price: 15.999` | Stored rounded to 2 decimals |
-| 3.5 | Missing required field | `POST /gear` without `item_name` | Clean 400 via error handler |
+| 3.5 | Missing required field | `POST /gear` without `item_name` | Clean 4xx via error handler |
 | 3.6 | Get own gear | `GET /gear` as provider 1 | 200, only provider 1's items |
 | 3.7 | Update another provider's gear | `PUT /gear/:gearId2` as provider 1 | 4xx, "not authorized" |
 | 3.8 | Update own gear | `PUT /gear/:gearId1` | 200, updated |
