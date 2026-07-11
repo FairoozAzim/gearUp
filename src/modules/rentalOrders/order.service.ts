@@ -1,3 +1,4 @@
+import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { ICreateOrderPayload } from "./order.interface";
 
@@ -35,7 +36,7 @@ const createOrdersIntoDB = async (payload: ICreateOrderPayload, userId: string) 
     const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     const total_amount = item.price.times(days).times(quantity);
 
-    const order = await prisma.$transaction(async (tx) => {
+    const order = await prisma.$transaction(async (tx : Prisma.TransactionClient) => {
         const newOrder = await tx.rentOrders.create({
             data: {
                 customer_id: userId,
