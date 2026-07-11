@@ -11,7 +11,7 @@ model GearItems {
     updatedAt DateTime @updatedAt
 
     provider_id String 
-    user User @relation(fields: [provider_id], references: [user_id])
+    provider User @relation(fields: [provider_id], references: [user_id])
 
     category_id String 
     category Categories @relation(fields: [category_id], references: [cat_id])

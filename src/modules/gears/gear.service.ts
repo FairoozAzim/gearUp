@@ -22,7 +22,12 @@ const getAllGearFromDB = async (filters: GearFilters) => {
             ...(availability === "true" && { available_quantity: { gt: 0 } })
         },
         include: {
-            category: true
+            category: true,
+            provider: {
+                select: {
+                    name: true
+                }
+            }
         },
         orderBy: {
             createdAt : "desc"
@@ -37,9 +42,8 @@ const getGearByIdFromDB = async (itemId: string) => {
         where: { item_id: itemId },
         include: {
             category: true,
-            user: {
+            provider: {
                 select: {
-                    user_id: true,
                     name: true
                 }
             }

@@ -78,7 +78,7 @@ const getOrderDetailsFromDB = async (orderId: string, userId: string) => {
         where: { order_id: orderId },
         include: {
             item: true,
-            user: {
+            customer: {
                 select: { user_id: true, name: true, email: true }
             }
         }

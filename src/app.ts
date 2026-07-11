@@ -21,7 +21,7 @@ const app: Application = express();
 app.use(cors(
     {
         origin : config.app_url,
-         credentials: true,
+        credentials: true,
 
 }))
 
@@ -41,7 +41,7 @@ app.get("/", (req : Request, res : Response) => {
 })
 
 app.use("/api/auth", authRoutes);
-app.use("/api/gear", gearRoutes);
+app.use("/api/gears", gearRoutes);
 app.use("/api/provider", providerRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/rentals", orderRoutes);

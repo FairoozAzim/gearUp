@@ -6,7 +6,7 @@ import { sendResponse } from "../../utils/sendResponse";
 
 
 
-const getAllGear = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const getAllGears = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const filters = req.query;
     const gearList = await gearService.getAllGearFromDB(filters);
 
@@ -32,6 +32,6 @@ const getGearById = catchAsync(async (req: Request, res: Response, next: NextFun
 
 
 export const gearController = {
-    getAllGear,
+    getAllGears,
     getGearById,
 };

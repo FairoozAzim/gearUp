@@ -95,7 +95,11 @@ const getMyProfileFromDB = async(userId : string) => {
 }
 
 const updateMyProfileIntoDB = async(userId : string, payload : any) => {
-    const {name, email } = payload;
+    const {name, email, role } = payload;
+    
+     if (role) {
+        throw new Error("Invalid request. Please contact with admin to change your role!");
+    }
     const updatedProfile = await prisma.user.update({
         where : {user_id : userId },
         data : {

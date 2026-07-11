@@ -10,7 +10,7 @@ model RentOrders {
     updatedAt DateTime @updatedAt
 
     customer_id String 
-    user User @relation(fields: [customer_id], references: [user_id])
+    customer User @relation(fields: [customer_id], references: [user_id])
 
     item_id String 
     item GearItems @relation(fields: [item_id], references: [item_id])
