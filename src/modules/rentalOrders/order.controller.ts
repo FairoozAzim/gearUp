@@ -35,6 +35,7 @@ const getUserOrder = catchAsync(async (req: Request, res: Response, next: NextFu
 const getOrderDetails = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id as string;
     const { id } = req.params;
+    console.log(id);
     const result = await orderService.getOrderDetailsFromDB(id as string, userId);
 
     sendResponse(res, {

@@ -5,8 +5,8 @@ import { orderController } from "./order.controller";
 
 const router = Router();
 
-router.get("/", authGuard(Role.CUSTOMER), orderController.getUserOrder)
-router.post("/", authGuard(Role.CUSTOMER, Role.PROVIDER), orderController.createOrder)
-router.get("/:id", authGuard(Role.CUSTOMER), orderController.getOrderDetails)
+router.get("/", authGuard(Role.CUSTOMER), orderController.getUserOrder);
+router.get("/:id", authGuard(Role.CUSTOMER), orderController.getOrderDetails);
+router.post("/", authGuard(Role.CUSTOMER, Role.PROVIDER), orderController.createOrder);
 
 export const orderRoutes = router;

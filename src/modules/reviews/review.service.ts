@@ -44,8 +44,10 @@ const createReviewIntoDB = async (userId: string, payload: ICreateReviewPayload)
 const getGearReviewsFromDB = async (itemId: string) => {
     const reviews = await prisma.reviews.findMany({
         where: { item_id: itemId },
+
         orderBy: { reviewed_at: "desc" }
     });
+    console.log(JSON.stringify(itemId), itemId.length);
 
     return reviews;
 };

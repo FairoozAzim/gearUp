@@ -20,14 +20,15 @@ const updateUserStatusIntoDB = async (userId: string, payload: IUpdateUserStatus
     return updatedUser;
 };
 
-const getAllGearFromDB = async () => {
+const getAllGearsFromDB = async () => {
     const gearList = await prisma.gearItems.findMany({
         include: {
             category: true,
-            user: { select: { user_id: true, name: true, email: true } }
+            provider: { select: { user_id: true, name: true, email: true } }
         },
         orderBy: { createdAt: "desc" }
     });
+    console.log(gearList);
 
     return gearList;
 };
@@ -36,7 +37,7 @@ const getAllRentalsFromDB = async () => {
     const rentals = await prisma.rentOrders.findMany({
         include: {
             item: true,
-            user: { select: { user_id: true, name: true, email: true } }
+            customer: { select: { user_id: true, name: true, email: true } }
         },
         orderBy: { createdAt: "desc" }
     });
@@ -47,6 +48,6 @@ const getAllRentalsFromDB = async () => {
 export const adminService = {
     getAllUsersFromDB,
     updateUserStatusIntoDB,
-    getAllGearFromDB,
+    getAllGearsFromDB,
     getAllRentalsFromDB
 };

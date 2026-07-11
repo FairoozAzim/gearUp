@@ -28,8 +28,8 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response, next: Ne
     });
 });
 
-const getAllGear = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const gearList = await adminService.getAllGearFromDB();
+const getAllGears = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const gearList = await adminService.getAllGearsFromDB();
 
     sendResponse(res, {
         success: true,
@@ -53,6 +53,6 @@ const getAllRentals = catchAsync(async (req: Request, res: Response, next: NextF
 export const adminController = {
     getAllUsers,
     updateUserStatus,
-    getAllGear,
+    getAllGears,
     getAllRentals
 };

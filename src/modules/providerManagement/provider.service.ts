@@ -93,7 +93,7 @@ const updateOrderStatusIntoDB = async (
     const updateData: any = { order_status: newStatus };
 
     if (newStatus === "RETURNED") {
-        updateData.return_date = new Date();
+        updateData.returned_on = new Date();
     }
 
     // Restore stock if the provider cancels/rejects the order

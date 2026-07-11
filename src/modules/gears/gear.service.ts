@@ -41,7 +41,7 @@ const getGearByIdFromDB = async (itemId: string) => {
     const gear = await prisma.gearItems.findUniqueOrThrow({
         where: { item_id: itemId, is_active: true },
         include: {
-            category: true,
+            category: true, 
             provider: {
                 select: {
                     name: true

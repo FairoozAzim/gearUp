@@ -76,15 +76,16 @@ const getMyOrdersFromDB = async (userId: string) => {
                 }
             }
         },
-
-        orderBy: { createdAt: "desc" }
-    }
+    },
+    
+     orderBy: { createdAt: "desc" }
     });
 
     return orders;
 };
 
 const getOrderDetailsFromDB = async (orderId: string, userId: string) => {
+    console.log(orderId);
     const order = await prisma.rentOrders.findUniqueOrThrow({
         where: { order_id: orderId },
         include: {
