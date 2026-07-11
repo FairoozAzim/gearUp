@@ -12,6 +12,7 @@ Customers browse and rent gear from independent providers, pay via Stripe, and l
 - **Database:** PostgreSQL, via Prisma ORM
 - **Auth:** JWT (access + refresh tokens), bcrypt password hashing
 - **Payments:** Stripe Checkout (hosted payment page + webhook confirmation)
+- **Deployment:** Render
 
 ---
 
@@ -19,7 +20,7 @@ Customers browse and rent gear from independent providers, pay via Stripe, and l
 
 | Role | Can do |
 |---|---|
-| **Customer** | Browse gear, place rental orders, pay, track order status, leave reviews |
+| **Customer** | Browse gears, place rental orders, pay, track order status, leave reviews after order completion |
 | **Provider** | Manage own gear inventory, view/confirm/reject incoming orders |
 | **Admin** | Manage users (suspend/activate), view all gear and rentals platform-wide |
 
