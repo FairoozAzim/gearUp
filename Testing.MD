@@ -173,6 +173,8 @@ ZIP: 12345
 - Replace every `REPLACE_WITH_...` placeholder with the real ID returned from the corresponding prior response.
 - For a faster, repeatable reset between test runs, consider wrapping the above into a Postman Collection with test scripts that auto-save `gearId1`, `gearId2`, `orderId1`, etc. as environment variables after each response, rather than copying manually each time.
 
+## Live API URL : https://gearup-zcje.onrender.com
+
 ---
 
 ## 1. Authentication (`/api/auth`)
